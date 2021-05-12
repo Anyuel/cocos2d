@@ -43,6 +43,7 @@
         "src/modules/mainmenu/ScreenMenu.js",
         "src/modules/testnetwork/network/Network.js",
         "src/modules/testnetwork/network/Packet.js",
-        "src/modules/testnetwork/ScreenNetwork.js"
+        "src/modules/testnetwork/ScreenNetwork.js",
+        "src/modules/gamescreen/ScreenGame.js"
     ]
 }

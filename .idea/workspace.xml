@@ -526,6 +526,17 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" uri="http://localhost:63342/HelloJavascript/index.html">
       <RunnerSettings RunnerId="JavascriptDebugRunner" />
       <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
@@ -680,7 +691,7 @@
       <workItem from="1620805434184" duration="5000" />
       <workItem from="1620805567119" duration="6000" />
       <workItem from="1620805719980" duration="1805000" />
-      <workItem from="1620807563150" duration="5197000" />
+      <workItem from="1620807563150" duration="7720000" />
     </task>
     <servers />
   </component>

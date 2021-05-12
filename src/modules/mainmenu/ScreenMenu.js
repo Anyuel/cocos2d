@@ -23,7 +23,7 @@ var ScreenMenu = cc.Layer.extend({
     },
     onSelectStart:function(sender)
     {
-        fr.view(ScreenNetwork);
+        fr.view(ScreenGame);
     },
 
 });
