@@ -45,3 +45,18 @@ gv.commonText = function(text, x, y){
         _lb.setColor(cc.color(220,220,220,255));
         return _lb;
 };
+
+gv.customText = function(text, x, y, size) {
+    var _lb = new ccui.Text(text,'',size);
+    if (x === undefined)
+        x = 0;
+    if(y === undefined)
+        y = 0;
+    _lb.attr({
+        x: x,
+        y: y
+    })
+    _lb.setColor(cc.color(220,220,220,255));
+
+    return _lb;
+}

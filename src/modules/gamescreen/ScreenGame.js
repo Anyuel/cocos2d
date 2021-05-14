@@ -1,21 +1,8 @@
-/**
- * Created by GSN on 7/9/2015.
- */
-
-var Direction =
-    {
-        UP:1,
-        DOWN:2,
-        LEFT:3,
-        RIGHT:4
-    };
-
-function SnakeGameState() {
-    // 0=up -> 3=right (clockwise)
-    this.dir = 0;
-    this.queue = [];
+function InitGameState() {
+    this.direction = 0;
+    this.snake_dots = [];
     this.len = 2;
-    this.apple = null;
+    this.prey = null;
     this.score = 0;
     this.speed = 2;
     this.time = 0;
@@ -23,30 +10,38 @@ function SnakeGameState() {
 }
 
 var ScreenGame = cc.Layer.extend({
-    ctor:function() {
+    ctor: function () {
         this._super();
+
         var size = cc.winSize;
         var margin = 10;
-        var yOffset = 25;
-        this.state = new SnakeGameState();
-        this.area = {
-            x0: margin,
-            x1: size.width - margin,
-            y0: margin + yOffset,
-            y1: size.height - margin - yOffset,
+        var marginTop = 30;
+
+        // init vars
+        this.state = new InitGameState();
+        this.screen = {
+            border: {
+                bottom_right: {
+                    x: margin,
+                    y: margin
+                },
+                top_left: {
+                    x: size.width-margin,
+                    y: size.height-marginTop
+                }
+            },
             grid: [40, 40]
         };
+        this.screen.width = this.screen.border.top_left.x - this.screen.border.bottom_right.x;
+        this.screen.height = this.screen.border.top_left.y - this.screen.border.bottom_right.y;
+        this.screen.block = {
+            x: this.screen.width/this.screen.grid[0],
+            y: this.screen.height/this.screen.grid[1],
+        }
 
-        this.area.width = this.area.x1 - this.area.x0;
-        this.area.height = this.area.y1 - this.area.y0;
-        this.area.unit = {
-            x: this.area.width / this.area.grid[0],
-            y: this.area.height / this.area.grid[1],
-        };
+        this.state.snake_dots.push(cc.p(this.screen.grid[0] / 2, this.screen.grid[1] / 2));
 
-        this.state.queue.push(cc.p(this.area.grid[0] / 2,
-            this.area.grid[1] / 2));
-        this.genApple();
+        this.generatePrey();
         this.init();
     },
 
@@ -61,37 +56,27 @@ var ScreenGame = cc.Layer.extend({
         this.score.anchorY = 1;
         this.addChild(this.score);
 
-        // game over
-        this.gameOver = new cc.LabelTTF('Game Over!', 'Arial', 30);
-        this.gameOver.x = size.width / 2;
-        this.gameOver.y = size.height / 2;
-        this.addChild(this.gameOver);
-        this.gameOver.setVisible(false);
+        // Game over
+        this.gameOverText = gv.customText(fr.Localization.text("GAME OVER!!"), size.width/2, 3*size.height/5, 60);
+        this.gameOverText.setVisible(false);
+        this.addChild(this.gameOverText);
 
-        // Restart button
-        this.btnRestart = gv.commonButton(200, 64, cc.winSize.width/2, 3*size.height/5,"Back to Menu");
-        this.addChild(this.btnRestart);
-        this.btnRestart.setVisible(false);
-        this.btnRestart.addClickEventListener(this.onRestart.bind(this));
+        // Return to menu
+        this.menuBtn = gv.commonButton(200, 64, size.width/2, 2.3*size.height/5, "Go to Menu");
+        this.addChild(this.menuBtn);
+        this.menuBtn.setVisible(false);
+        this.menuBtn.addClickEventListener(this.onMenuBtnClick.bind(this));
 
-        // draw area
-        var r = new cc.DrawNode();
-        r.drawRect(
-            cc.p(this.area.x0, this.area.y0),
-            cc.p(this.area.x1, this.area.y1),
-            null, 2
-        );
-        this.addChild(r);
+        this.drawBorder();
         this.updateDisplay();
 
-        // keyboard handler
         var self = this;
         if ('keyboard' in cc.sys.capabilities) {
             cc.eventManager.addListener({
                 event: cc.EventListener.KEYBOARD,
                 onKeyPressed: function (key, event) {
                     if (!self.state.alive) {
-                        self.showGameOver();
+                        self.restart();
                     }
 
                     switch (key) {
@@ -115,55 +100,35 @@ var ScreenGame = cc.Layer.extend({
             }, this);
         }
 
+        this.scheduleUpdate();
     },
 
-    onRestart: function () {
-        fr.view(ScreenMenu);
+    drawBorder: function() {
+        var bdr = new cc.DrawNode();
+        this.addChild(bdr);
+        bdr.drawRect(this.screen.border.top_left, this.screen.border.bottom_right,null,2);
     },
 
-    processEvent: function(event) {
-        var delta = event.getDelta();
-        var minDelta = 10;
-
-        if (Math.abs(delta.x) < minDelta && Math.abs(delta.y) < minDelta) {
-            return;
-        }
-
-        if (Math.abs(delta.x) > Math.abs(delta.y)) {
-            // horizontal move
-            if (delta.x > 0) {
-                this.state.dir = 1;
-            } else {
-                this.state.dir = 3;
-            }
-        } else {
-            // vertical move
-            if (delta.y > 0) {
-                this.state.dir = 0;
-            } else {
-                this.state.dir = 2;
-            }
-        }
-    },
-
-    areaPos: function(p) {
+    absolutePos: function(p) {
         return cc.p(
-            p.x * this.area.unit.x + this.area.x0 + this.area.unit.x / 2,
-            p.y * this.area.unit.y + this.area.y0 + this.area.unit.y / 2
+            p.x * this.screen.block.x + this.screen.border.bottom_right.x + this.screen.block.x/2,
+            p.y * this.screen.block.y + this.screen.border.bottom_right.y + this.screen.block.y/2
         );
     },
 
-    updateDisplay: function() {
-        var objSize = 5;
+    onMenuBtnClick: function () {
+        fr.view(ScreenMenu);
+    },
 
-        // ugly: the snake/apple layers are destroyed and recreated each frame,
-        // but it does the job (was too lazy to make nice PNG sprites :)
+    updateDisplay: function() {
+        var dotSize = 5;
+
         if (this.snake) {
             this.removeChild(this.snake);
         }
 
-        if (this.apple) {
-            this.removeChild(this.apple);
+        if (this.prey) {
+            this.removeChild(this.prey);
         }
 
         // score
@@ -173,77 +138,67 @@ var ScreenGame = cc.Layer.extend({
         this.snake = new cc.DrawNode();
         this.addChild(this.snake);
 
-        for (var i = 0, len = this.state.queue.length; i < len; ++i) {
-            this.snake.drawDot(this.areaPos(this.state.queue[i]),
-                objSize, cc.color(0,255,0));
+        for (var i = 0, len = this.state.snake_dots.length; i < len; ++i) {
+            this.snake.drawDot(this.absolutePos(this.state.snake_dots[i]),
+                dotSize, cc.color(0,255,0));
         }
 
-        // apple
-        this.apple = new cc.DrawNode();
-        this.addChild(this.apple);
+        this.prey = new cc.DrawNode();
+        this.addChild(this.prey);
 
-        this.snake.drawDot(this.areaPos(this.state.apple),
-            objSize, cc.color(255,0,0));
+        this.snake.drawDot(this.absolutePos(this.state.prey),
+            dotSize, cc.color(255,0,0));
     },
-    genApple: function() {
-        this.state.apple = cc.p(
-            Math.floor(Math.random() * this.area.grid[0]),
-            Math.floor(Math.random() * this.area.grid[1])
+    generatePrey: function() {
+        this.state.prey = cc.p(
+            Math.floor(Math.random() * this.screen.grid[0]),
+            Math.floor(Math.random() * this.screen.grid[1])
         )
     },
     showGameOver: function() {
         this.state.alive = 0;
-        this.gameOver.setVisible(true);
-        this.btnRestart.setVisible(true);
+        this.gameOverText.setVisible(true);
+        this.menuBtn.setVisible(true);
     },
     moveSnake: function() {
-        var q = this.state.queue;
-        var p = q[q.length - 1];
-        p = cc.p(p.x, p.y);
+        var dots = this.state.snake_dots;
+        var head = dots[dots.length - 1];
+        head = cc.p(head.x, head.y);
 
-        switch (this.state.dir) {
+        switch (this.state.direction) {
             case 0:
-                p.y += 1;
+                head.y += 1;
                 break;
             case 1:
-                p.x += 1;
+                head.x += 1;
                 break;
             case 2:
-                p.y -= 1;
+                head.y -= 1;
                 break;
             case 3:
-                p.x -= 1;
+                head.x -= 1;
                 break;
         }
 
         // check bounds
-        var g = this.area.grid;
-        if (p.x < 0 || p.y < 0 || p.x >= g[0] || p.y >= g[1]) {
+        var g = this.screen.grid;
+        if (head.x < 0 || head.y < 0 || head.x >= g[0] || head.y >= g[1]) {
             this.showGameOver();
         } else {
-            q.push(p);
+            dots.push(head);
         }
 
         // check collision with itself
-        for (var i = 0, len = q.length - 1; i < len; ++i) {
-            if (p.x === q[i].x && p.y === q[i].y) {
+        for (var i = 0, len = dots.length - 1; i < len; ++i) {
+            if (head.x === dots[i].x && head.y === dots[i].y) {
                 this.showGameOver();
                 break;
             }
         }
 
-        // check apple
-        var a = this.state.apple;
-        if (p.x === a.x && p.y == a.y) {
-            this.state.score += 100;
-            this.state.speed *= 1.2;
-            this.state.len += 1;
-            this.genApple();
-        }
-
         // adjust queue len
-        if (q.length > this.state.len) {
-            q.shift();
+        if (dots.length > this.state.len) {
+            dots.shift();
         }
     },
     update: function(dt) {
@@ -263,5 +218,5 @@ var ScreenGame = cc.Layer.extend({
             this.updateDisplay();
         }
     }
-
 });
+

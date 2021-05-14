@@ -11,13 +11,15 @@ var ScreenMenu = cc.Layer.extend({
         this._super();
         var size = cc.director.getVisibleSize();
 
-        var yBtn = 3*size.height/5;
+        var btnStart = gv.commonButton(200, 64, cc.winSize.width/2, 1*size.height/2,"Game Start");
+        this.addChild(btnStart);
+        btnStart.addClickEventListener(this.onSelectStart.bind(this));
 
-        var btnDragonbones = gv.commonButton(200, 64, cc.winSize.width/2, yBtn,"Game Start");
-        this.addChild(btnDragonbones);
-        btnDragonbones.addClickEventListener(this.onSelectStart.bind(this));
+        var titleText = gv.customText(fr.Localization.text("SNAKE GAME"), cc.winSize.width/2, 3.5*size.height/5, 60);
+        this.addChild(titleText);
 
     },
+
     onEnter:function(){
         this._super();
     },
