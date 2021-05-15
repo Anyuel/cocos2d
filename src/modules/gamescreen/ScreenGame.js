@@ -30,7 +30,7 @@ var ScreenGame = cc.Layer.extend({
                     y: size.height-marginTop
                 }
             },
-            grid: [30, 30]
+            grid: [40, 30]
         };
         this.screen.width = this.screen.border.top_left.x - this.screen.border.bottom_right.x;
         this.screen.height = this.screen.border.top_left.y - this.screen.border.bottom_right.y;
@@ -51,14 +51,15 @@ var ScreenGame = cc.Layer.extend({
         this._super();
         var size = cc.winSize;
 
-        this.snake_pic = new cc.Sprite('res/snakepic.png', cc.rect(64*3,0, 64, 64));
+        this.snake_pic = new cc.Sprite('res/green.jpg', cc.rect(0,0, this.screen.block.x, this.screen.block.y));
+        // this.snake_pic = new cc.Sprite('res/snakepic.png', cc.rect(64*3,0, 64, 64));
         this.snake_pic.attr({
             anchorX: 0.5,
             anchorY: 0.5,
             x: this.absolutePos(this.state.snake_dots[0]).x,
             y: this.absolutePos(this.state.snake_dots[0]).y
         })
-        this.snake_pic.setScale(0.5);
+        // this.snake_pic.setScale(0.5);
         this.addChild(this.snake_pic);
 
         // show score
@@ -94,36 +95,37 @@ var ScreenGame = cc.Layer.extend({
                         case cc.KEY['up']:
                             if (self.state.direction === 2)
                                 break;
-                            else if (self.state.direction === 1)
-                                self.snake_pic.runAction(cc.RotateBy(0,-90));
-                            else if (self.state.direction === 3)
-                                self.snake_pic.runAction(cc.RotateBy(0,90));
+                            // else if (self.state.direction === 1)
+                            //     self.snake_pic.runAction(cc.RotateBy(0,-90));
+                            // else if (self.state.direction === 3)
+                            //     self.snake_pic.runAction(cc.RotateBy(0,90));
                             self.state.direction = 0;
                             break;
                         case cc.KEY['right']:
                             if (self.state.direction === 3)
                                 break;
-                            else if (self.state.direction === 0)
-                                self.snake_pic.runAction(cc.RotateBy(0,90));
-                            else if (self.state.direction === 2)
-                                self.snake_pic.runAction(cc.RotateBy(0,-90));
+                            // else if (self.state.direction === 0)
+                            //     self.snake_pic.runAction(cc.RotateBy(0,90));
+                            // else if (self.state.direction === 2)
+                            //     self.snake_pic.runAction(cc.RotateBy(0,-90));
                             self.state.direction = 1;
                             break;
                         case cc.KEY['down']:
                             if (self.state.direction === 0)
                                 break;
-                            else if (self.state.direction === 1)
-                                self.snake_pic.runAction(cc.RotateBy(0,90));
-                            else if (self.state.direction === 3)
-                                self.snake_pic.runAction(cc.RotateBy(0,-90));
+                            // else if (self.state.direction === 1)
+                            //     self.snake_pic.runAction(cc.RotateBy(0,90));
+                            // else if (self.state.direction === 3)
+                            //     self.snake_pic.runAction(cc.RotateBy(0,-90));
                             self.state.direction = 2;
                             break;
                         case cc.KEY['left']:
-                            if (self.state.direction === 0)
-                                self.snake_pic.runAction(cc.RotateBy(0,-90));
-                            else if (self.state.direction === 2)
-                                self.snake_pic.runAction(cc.RotateBy(0,90));
-                            else if (self.state.direction === 1)
+                            // if (self.state.direction === 0)
+                            //     self.snake_pic.runAction(cc.RotateBy(0,-90));
+                            // else if (self.state.direction === 2)
+                            //     self.snake_pic.runAction(cc.RotateBy(0,90));
+                            // else if (self.state.direction === 1)
+                            if (self.state.direction === 1)
                                 break;
                             self.state.direction = 3;
                             break;
@@ -174,24 +176,26 @@ var ScreenGame = cc.Layer.extend({
         // this.addChild(this.snake);
 
         if (this.snake_body.length < this.state.len) {
-            var snake_tail = new cc.Sprite('res/snakepic.png', cc.rect(64*2,64, 64, 64))
+            var snake_tail = new cc.Sprite('res/green.jpg', cc.rect(0,0, this.screen.block.x, this.screen.block.y))
+            // var snake_tail = new cc.Sprite('res/snakepic.png', cc.rect(64*2,64, 64, 64))
             snake_tail.attr({
                 anchorX: 0.5,
                 anchorY: 0.5,
             })
-            snake_tail.setScale(0.5);
+            // snake_tail.setScale(0.5);
             snake_tail.setVisible(false);
             this.addChild(snake_tail);
             this.snake_body.push(snake_tail);
         }
 
         if (this.snake_Hbody.length < this.state.len) {
-            var snake_htail = new cc.Sprite('res/snakepic.png', cc.rect(64,0, 64, 64))
+            var snake_htail = new cc.Sprite('res/green.jpg', cc.rect(0,0, this.screen.block.x, this.screen.block.y))
+            // var snake_htail = new cc.Sprite('res/snakepic.png', cc.rect(64,0, 64, 64))
             snake_htail.attr({
                 anchorX: 0.5,
                 anchorY: 0.5,
             })
-            snake_htail.setScale(0.5);
+            // snake_htail.setScale(0.5);
             snake_htail.setVisible(false);
             this.addChild(snake_htail);
             this.snake_Hbody.push(snake_htail);

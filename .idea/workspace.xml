@@ -532,17 +532,6 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" uri="http://localhost:63342/HelloJavascript/index.html">
       <RunnerSettings RunnerId="JavascriptDebugRunner" />
       <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
@@ -700,7 +689,8 @@
       <workItem from="1620807563150" duration="8378000" />
       <workItem from="1620957231074" duration="14491000" />
       <workItem from="1621070908532" duration="1111000" />
-      <workItem from="1621072628737" duration="14013000" />
+      <workItem from="1621072628737" duration="14083000" />
+      <workItem from="1621071728594" duration="1125000" />
     </task>
     <servers />
   </component>
@@ -787,6 +777,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
