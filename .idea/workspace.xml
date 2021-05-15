@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e4d55f2b-12a8-484d-a811-f49e89a3e91c" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frameworks/js-bindings/api/jsb_cocos2dx_baseframework_auto_api.js" beforeDir="false" afterPath="$PROJECT_DIR$/frameworks/js-bindings/api/jsb_cocos2dx_baseframework_auto_api.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/base/UIFactory.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/base/UIFactory.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/res/snake/snake.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modules/gamescreen/ScreenGame.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/gamescreen/ScreenGame.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modules/mainmenu/ScreenMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/mainmenu/ScreenMenu.js" afterDir="false" />
     </list>
@@ -305,6 +304,8 @@
   </component>
   <component name="PropertiesComponent">
     <property name="FullScreen" value="false" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://D:/Project/lgrc_project/client/HelloJavascript/src/framework/Framework.js" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
@@ -533,15 +534,13 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -702,6 +701,8 @@
       <workItem from="1620805719980" duration="1805000" />
       <workItem from="1620807563150" duration="8378000" />
       <workItem from="1620957231074" duration="14491000" />
+      <workItem from="1621070908532" duration="1111000" />
+      <workItem from="1621072628737" duration="4200000" />
     </task>
     <servers />
   </component>
@@ -777,6 +778,17 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">

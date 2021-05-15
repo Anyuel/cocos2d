@@ -2,7 +2,7 @@ function InitGameState() {
     this.direction = 0;
     this.snake_dots = [];
     this.len = 2;
-    this.prey = null;
+    this.apple = null;
     this.score = 0;
     this.speed = 2;
     this.time = 0;
@@ -30,7 +30,7 @@ var ScreenGame = cc.Layer.extend({
                     y: size.height-marginTop
                 }
             },
-            grid: [40, 40]
+            grid: [30, 30]
         };
         this.screen.width = this.screen.border.top_left.x - this.screen.border.bottom_right.x;
         this.screen.height = this.screen.border.top_left.y - this.screen.border.bottom_right.y;
@@ -57,7 +57,7 @@ var ScreenGame = cc.Layer.extend({
         this.addChild(this.score);
 
         // Game over
-        this.gameOverText = gv.customText(fr.Localization.text("GAME OVER!!"), size.width/2, 3*size.height/5, 60);
+        this.gameOverText = gv.customText("GAME OVER!!", size.width/2, 3*size.height/5, 60);
         this.gameOverText.setVisible(false);
         this.addChild(this.gameOverText);
 
@@ -76,21 +76,21 @@ var ScreenGame = cc.Layer.extend({
                 event: cc.EventListener.KEYBOARD,
                 onKeyPressed: function (key, event) {
                     if (!self.state.alive) {
-                        self.restart();
+                        self.gameOver();
                     }
 
                     switch (key) {
                         case cc.KEY['up']:
-                            self.state.dir = 0;
+                            self.state.direction = 0;
                             break;
                         case cc.KEY['right']:
-                            self.state.dir = 1;
+                            self.state.direction = 1;
                             break;
                         case cc.KEY['down']:
-                            self.state.dir = 2;
+                            self.state.direction = 2;
                             break;
                         case cc.KEY['left']:
-                            self.state.dir = 3;
+                            self.state.direction = 3;
                             break;
                         default:
                             break;
@@ -127,8 +127,8 @@ var ScreenGame = cc.Layer.extend({
             this.removeChild(this.snake);
         }
 
-        if (this.prey) {
-            this.removeChild(this.prey);
+        if (this.apple) {
+            this.removeChild(this.apple);
         }
 
         // score
@@ -143,19 +143,24 @@ var ScreenGame = cc.Layer.extend({
                 dotSize, cc.color(0,255,0));
         }
 
-        this.prey = new cc.DrawNode();
-        this.addChild(this.prey);
+        this.apple = new cc.Sprite('res/snakepic.png', cc.rect(0,64*3,64,64));
+        this.apple.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+            x: this.absolutePos(this.state.apple).x,
+            y: this.absolutePos(this.state.apple).y
+        })
+        this.apple.setScale(0.5);
+        this.addChild(this.apple);
 
-        this.snake.drawDot(this.absolutePos(this.state.prey),
-            dotSize, cc.color(255,0,0));
     },
     generatePrey: function() {
-        this.state.prey = cc.p(
+        this.state.apple = cc.p(
             Math.floor(Math.random() * this.screen.grid[0]),
             Math.floor(Math.random() * this.screen.grid[1])
         )
     },
-    showGameOver: function() {
+    gameOver: function() {
         this.state.alive = 0;
         this.gameOverText.setVisible(true);
         this.menuBtn.setVisible(true);
@@ -180,23 +185,27 @@ var ScreenGame = cc.Layer.extend({
                 break;
         }
 
-        // check bounds
-        var g = this.screen.grid;
-        if (head.x < 0 || head.y < 0 || head.x >= g[0] || head.y >= g[1]) {
-            this.showGameOver();
+        if (head.x < 0 || head.y < 0 || head.x >= this.screen.grid[0] || head.y >= this.screen.grid[1]) {
+            this.gameOver();
         } else {
             dots.push(head);
         }
 
-        // check collision with itself
         for (var i = 0, len = dots.length - 1; i < len; ++i) {
             if (head.x === dots[i].x && head.y === dots[i].y) {
-                this.showGameOver();
+                this.gameOver();
                 break;
             }
         }
 
-        // adjust queue len
+        // Eating prey
+        if (head.x === this.state.apple.x && head.y === this.state.apple.y) {
+            this.state.score += 1;
+            this.state.len += 1;
+            this.state.speed += 0.1;
+            this.generatePrey();
+        }
+
         if (dots.length > this.state.len) {
             dots.shift();
         }

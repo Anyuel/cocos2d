@@ -15,8 +15,9 @@ var ScreenMenu = cc.Layer.extend({
         this.addChild(btnStart);
         btnStart.addClickEventListener(this.onSelectStart.bind(this));
 
-        var titleText = gv.customText(fr.Localization.text("SNAKE GAME"), cc.winSize.width/2, 3.5*size.height/5, 60);
+        var titleText = gv.customText("SNAKE GAME", cc.winSize.width/2, 3.5*size.height/5, 60);
         this.addChild(titleText);
+
 
     },
 
