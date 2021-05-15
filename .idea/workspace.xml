@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e4d55f2b-12a8-484d-a811-f49e89a3e91c" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/res/snake/snake.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modules/gamescreen/ScreenGame.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/gamescreen/ScreenGame.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/mainmenu/ScreenMenu.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/mainmenu/ScreenMenu.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -702,7 +700,7 @@
       <workItem from="1620807563150" duration="8378000" />
       <workItem from="1620957231074" duration="14491000" />
       <workItem from="1621070908532" duration="1111000" />
-      <workItem from="1621072628737" duration="4200000" />
+      <workItem from="1621072628737" duration="14013000" />
     </task>
     <servers />
   </component>
