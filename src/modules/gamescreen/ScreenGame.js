@@ -7,6 +7,7 @@ function InitGameState() {
     this.speed = 2;
     this.time = 0;
     this.alive = 1;
+    this.temp = 0;
 }
 
 var ScreenGame = cc.Layer.extend({
@@ -42,6 +43,7 @@ var ScreenGame = cc.Layer.extend({
         this.state.snake_dots.push(cc.p(this.screen.grid[0] / 2, this.screen.grid[1] / 2));
         this.snake_body = [];
         this.snake_Hbody = [];
+
 
         this.generatePrey();
         this.init();
@@ -88,6 +90,7 @@ var ScreenGame = cc.Layer.extend({
             cc.eventManager.addListener({
                 event: cc.EventListener.KEYBOARD,
                 onKeyPressed: function (key, event) {
+                    self.state.temp = self.state.speed;
                     if (!self.state.alive) {
                         self.gameOver();
                     }
@@ -95,6 +98,9 @@ var ScreenGame = cc.Layer.extend({
                         case cc.KEY['up']:
                             if (self.state.direction === 2)
                                 break;
+                            else if (self.state.direction === 0) {
+                                self.state.speed *= 1.5;
+                            }
                             // else if (self.state.direction === 1)
                             //     self.snake_pic.runAction(cc.RotateBy(0,-90));
                             // else if (self.state.direction === 3)
@@ -104,6 +110,9 @@ var ScreenGame = cc.Layer.extend({
                         case cc.KEY['right']:
                             if (self.state.direction === 3)
                                 break;
+                            else if (self.state.direction === 1) {
+                                self.state.speed *= 1.5;
+                            }
                             // else if (self.state.direction === 0)
                             //     self.snake_pic.runAction(cc.RotateBy(0,90));
                             // else if (self.state.direction === 2)
@@ -113,6 +122,9 @@ var ScreenGame = cc.Layer.extend({
                         case cc.KEY['down']:
                             if (self.state.direction === 0)
                                 break;
+                            else if (self.state.direction === 2) {
+                                self.state.speed *= 1.5;
+                            }
                             // else if (self.state.direction === 1)
                             //     self.snake_pic.runAction(cc.RotateBy(0,90));
                             // else if (self.state.direction === 3)
@@ -127,17 +139,23 @@ var ScreenGame = cc.Layer.extend({
                             // else if (self.state.direction === 1)
                             if (self.state.direction === 1)
                                 break;
+                            else if (self.state.direction === 3) {
+                                self.state.speed *= 1.5;
+                            }
                             self.state.direction = 3;
                             break;
                         default:
                             break;
                     }
                 },
-                onKeyReleased: function (key, event) {}
+                onKeyReleased: function (key, event) {
+                    self.state.speed = self.state.temp;
+                }
             }, this);
         }
 
         this.scheduleUpdate();
+
     },
 
     drawBorder: function() {
