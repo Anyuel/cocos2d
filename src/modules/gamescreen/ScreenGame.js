@@ -74,6 +74,7 @@ var ScreenGame = cc.Layer.extend({
         this.addChild(background);
 
         this.gen = true;
+        this.prgbar = false;
 
         this.snake_pic = new cc.Sprite('res/snakepic.png', cc.rect(64*3,0, 64, 64));
         this.snake_pic.attr({
@@ -201,27 +202,6 @@ var ScreenGame = cc.Layer.extend({
                 }
             }, this);
         }
-
-        this.gameOverText = new cc.Sprite('res/gameOver.png');
-        this.gameOverText.attr({
-            x: size.width/2,
-            y:  3*size.height/5,
-            anchorX: 0.5,
-            anchorY: 0.5
-        });
-        this.gameOverText.setScale(0.25);
-        this.gameOverText.setVisible(false);
-        this.addChild(this.gameOverText);
-
-        // Return to menu
-        this.menuBtn = new ccui.Button('res/menu.png', 'res/menuclicked.png', 'res/menu.png');
-        this.menuBtn.x = size.width/2;
-        this.menuBtn.y = 2.3*size.height/5;
-        this.menuBtn.setScale(0.5);
-        this.addChild(this.menuBtn);
-        this.menuBtn.setVisible(false);
-        this.menuBtn.addClickEventListener(this.onMenuBtnClick.bind(this));
-
         this.chance = 0;
 
         this.scheduleUpdate();
@@ -487,12 +467,25 @@ var ScreenGame = cc.Layer.extend({
 
         if (this.state.genCowTime) {
             var now = new Date();
-            if (now - this.state.genCowTime > 4000) {
+            if (this.prgbar === false) {
+                var to1 = cc.ProgressFromTo(6, 100, 0);
+                this.healthBar = cc.ProgressTimer.create(cc.Sprite.create('res/green.jpg', cc.rect(0,0,80,5)));
+                this.healthBar.setType(cc.ProgressTimer.TYPE_BAR);
+                this.healthBar.setBarChangeRate(cc.p(1,0));
+                this.healthBar.setMidpoint(cc.p(0,0));
+                this.healthBar.setPosition(cc.winSize.width/2, cc.winSize.height/2);
+                this.addChild(this.healthBar);
+                this.healthBar.runAction(to1);
+                this.prgbar = true;
+            }
+
+            if (now - this.state.genCowTime > 6000) {
                 this.gen = true;
                 this.state.cow = cc.p(-1,-1);
                 this.chance = Math.random();
                 this.state.genCowTime = null;
                 this.cow.setVisible(false);
+                this.prgbar = false;
             }
         }
 
@@ -505,8 +498,45 @@ var ScreenGame = cc.Layer.extend({
     },
     gameOver: function() {
         this.state.alive = 0;
+        var size = cc.winSize;
+        this.gameOverText = new cc.Sprite('res/gameOver.png');
+        this.gameOverText.attr({
+            x: size.width/2,
+            y:  3*size.height/5,
+            anchorX: 0.5,
+            anchorY: 0.5
+        });
+        this.gameOverText.setScale(0.25);
+        this.gameOverText.setVisible(false);
+        this.addChild(this.gameOverText);
+
+        // Return to menu
+        this.menuBtn = new ccui.Button('res/menu.png', 'res/menuclicked.png', 'res/menu.png');
+        this.menuBtn.x = size.width/2;
+        this.menuBtn.y = 2.3*size.height/5;
+        this.menuBtn.setScale(0.5);
+        this.addChild(this.menuBtn);
+        this.menuBtn.setVisible(false);
+        this.menuBtn.addClickEventListener(this.onMenuBtnClick.bind(this));
+
+        this.highest_score = new cc.LabelTTF('', 'Arial', 30);
+        this.highest_score.x = size.width / 2;
+        this.highest_score.y = 1.8 * size.height / 5;
+        this.highest_score.setVisible(false);
+        this.addChild(this.highest_score);
+
         this.gameOverText.setVisible(true);
         this.menuBtn.setVisible(true);
+        if (cc.sys.localStorage.getItem("bestscore")) {
+            if (this.state.score > cc.sys.localStorage.getItem("bestscore")) {
+                cc.sys.localStorage.setItem("bestscore", this.state.score);
+            }
+        }
+        else {
+            cc.sys.localStorage.setItem("bestscore", this.state.score);
+        }
+        this.highest_score.setString('BEST SCORE: ' + cc.sys.localStorage.getItem("bestscore"));
+        this.highest_score.setVisible(true);
     },
     moveSnake: function() {
         var dots = this.state.snake_dots;
@@ -570,6 +600,8 @@ var ScreenGame = cc.Layer.extend({
             this.state.cow = cc.p(-1,-1);
             this.chance = Math.random();
             this.cow.setVisible(false);
+            // this.prgbar = false;
+            // this.removeChild(this.healthBar);
         }
 
 
