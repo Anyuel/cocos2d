@@ -1,8 +1,10 @@
 var fr = fr||{}
 
-fr.view = function(Screen, transitionTime)
+fr.view = function (Screen, mode, transitionTime)
+// fr.view = function(Screen, transitionTime)
 {
-    var layer = new Screen();
+    // var layer = new Screen();
+    var layer = new Screen(mode);
     layer.setName("screen");
     var scene = new cc.Scene();
     scene.addChild(layer);

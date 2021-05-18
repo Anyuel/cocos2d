@@ -16,31 +16,50 @@ var ScreenMenu = cc.Layer.extend({
         background.anchorY = 0;
         this.addChild(background);
 
-        var btnStart = new ccui.Button('res/startbtn.png','res/startbtnclicked.png','res/startbtn.png');
-        btnStart.x = cc.winSize.width / 2;
-        btnStart.y = 0.75 * cc.winSize.height / 2;
-        btnStart.setScale(0.2);
-        this.addChild(btnStart);
-        btnStart.addClickEventListener(this.onSelectStart.bind(this));
+        this.btnStart = new ccui.Button('res/startbtn.png','res/startbtnclicked.png','res/startbtn.png');
+        this.btnStart.x = cc.winSize.width / 2;
+        this.btnStart.y = 0.75 * cc.winSize.height / 2;
+        this.btnStart.setScale(0.2);
+        this.addChild(this.btnStart);
+        this.btnStart.addClickEventListener(this.onSelectStart.bind(this));
+
+        this.btnEasy = new ccui.Button('res/easybtn.png','res/easybtnclicked.png','res/easybtn.png');
+        this.btnEasy.x = cc.winSize.width / 2 - 150;
+        this.btnEasy.y = 0.75 * cc.winSize.height / 2;
+        this.btnEasy.setScale(0.5);
+        this.btnEasy.setVisible(false);
+        this.addChild(this.btnEasy);
+        this.btnEasy.addClickEventListener(this.onSelectEasy.bind(this));
+
+        this.btnHard = new ccui.Button('res/hardbtn.png','res/hardbtnclicked.png','res/hardbtn.png');
+        this.btnHard.x = cc.winSize.width / 2 + 150;
+        this.btnHard.y = 0.75 * cc.winSize.height / 2;
+        this.btnHard.setScale(0.5);
+        this.btnHard.setVisible(false);
+        this.addChild(this.btnHard);
+        this.btnHard.addClickEventListener(this.onSelectHard.bind(this));
 
         var title = new cc.Sprite('res/title.png');
         title.x = cc.winSize.width / 2;
         title.y = 3.5 * cc.winSize.height / 5;
         title.setScale(1.5);
         this.addChild(title);
-
-        // var titleText = gv.customText("SNAKE GAME", cc.winSize.width/2, 3.5*size.height/5, 60);
-        // this.addChild(titleText);
-
-
     },
 
     onEnter:function(){
         this._super();
     },
-    onSelectStart:function(sender)
+    onSelectStart:function()
     {
-        fr.view(ScreenGame);
+        this.btnStart.setVisible(false);
+        this.btnEasy.setVisible(true);
+        this.btnHard.setVisible(true);
     },
+    onSelectEasy:function () {
+        fr.view(ScreenGame, true);
+    },
+    onSelectHard: function () {
+        fr.view(ScreenGame, false);
+    }
 
 });

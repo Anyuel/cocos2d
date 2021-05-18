@@ -1,17 +1,19 @@
 function InitGameState() {
     this.direction = 0;
     this.snake_dots = [];
-    this.len = 2;
+    this.len = 3;
     this.apple = null;
     this.score = 0;
     this.speed = 2;
     this.time = 0;
     this.alive = 1;
-    this.temp = 0;
+    this.cow = cc.p(-1,-1);
+    this.genCowTime = null;
 }
 
 var ScreenGame = cc.Layer.extend({
-    ctor: function () {
+    ctor: function (mode) {
+    // ctor: function () {
         this._super();
 
         var size = cc.winSize;
@@ -48,8 +50,7 @@ var ScreenGame = cc.Layer.extend({
         this.snake_curve_2 = [];
         this.snake_curve_3 = [];
         this.snake_curve_4 = [];
-
-        this.keydown = false;
+        this.mode = mode;
     },
 
     onEnterTransitionDidFinish: function () {
@@ -71,6 +72,8 @@ var ScreenGame = cc.Layer.extend({
         background.anchorY = 0;
         background.setPosition(this.screen.border.bottom_right);
         this.addChild(background);
+
+        this.gen = true;
 
         this.snake_pic = new cc.Sprite('res/snakepic.png', cc.rect(64*3,0, 64, 64));
         this.snake_pic.attr({
@@ -119,7 +122,6 @@ var ScreenGame = cc.Layer.extend({
         this.sntail3.runAction(cc.RotateBy(0, 270));
         this.addChild(this.sntail3);
 
-
         // show score
         this.score = new cc.LabelTTF('', 'Arial', 20);
         this.score.x = size.width / 2;
@@ -127,11 +129,13 @@ var ScreenGame = cc.Layer.extend({
         this.score.anchorY = 0.5;
         this.addChild(this.score);
 
-        // Game over
-        // this.gameOverText = gv.customText("GAME OVER!!", size.width/2, 3*size.height/5, 60);
-        // this.gameOverText.setVisible(false);
-        // this.addChild(this.gameOverText);
-
+        this.cow = new cc.Sprite('res/snakepic.png', cc.rect(0,64*3,64,64));
+        this.cow.attr({
+            anchorX: 0.5,
+            anchorY: 0.5,
+        })
+        this.cow.setVisible(false);
+        this.addChild(this.cow);
 
         this.drawBorder();
         this.updateDisplay();
@@ -151,9 +155,6 @@ var ScreenGame = cc.Layer.extend({
                         case cc.KEY['up']:
                             if (self.state.direction === 2)
                                 break;
-                            // else if (self.state.direction === 0) {
-
-                            // }
                             else if (self.state.direction === 1)
                                 self.snake_pic.runAction(cc.RotateBy(0,-90));
                             else if (self.state.direction === 3)
@@ -164,9 +165,6 @@ var ScreenGame = cc.Layer.extend({
                         case cc.KEY['right']:
                             if (self.state.direction === 3)
                                 break;
-                            // else if (self.state.direction === 1) {
-
-                            // }
                             else if (self.state.direction === 0)
                                 self.snake_pic.runAction(cc.RotateBy(0,90));
                             else if (self.state.direction === 2)
@@ -177,9 +175,6 @@ var ScreenGame = cc.Layer.extend({
                         case cc.KEY['down']:
                             if (self.state.direction === 0)
                                 break;
-                            // else if (self.state.direction === 2) {
-
-                            // }
                             else if (self.state.direction === 1)
                                 self.snake_pic.runAction(cc.RotateBy(0,90));
                             else if (self.state.direction === 3)
@@ -192,12 +187,8 @@ var ScreenGame = cc.Layer.extend({
                                 self.snake_pic.runAction(cc.RotateBy(0,-90));
                             else if (self.state.direction === 2)
                                 self.snake_pic.runAction(cc.RotateBy(0,90));
-                            // else if (self.state.direction === 1)
-                            if (self.state.direction === 1)
+                            else if (self.state.direction === 1)
                                 break;
-                            // else if (self.state.direction === 3) {
-                            //     self.state.speed *= 1.5;
-                            // }
                             self.state.direction = 3;
                             break;
                         default:
@@ -223,7 +214,6 @@ var ScreenGame = cc.Layer.extend({
         this.addChild(this.gameOverText);
 
         // Return to menu
-        // this.menuBtn = gv.commonButton(200, 64, size.width/2, 2.3*size.height/5, "Go to Menu");
         this.menuBtn = new ccui.Button('res/menu.png', 'res/menuclicked.png', 'res/menu.png');
         this.menuBtn.x = size.width/2;
         this.menuBtn.y = 2.3*size.height/5;
@@ -231,6 +221,8 @@ var ScreenGame = cc.Layer.extend({
         this.addChild(this.menuBtn);
         this.menuBtn.setVisible(false);
         this.menuBtn.addClickEventListener(this.onMenuBtnClick.bind(this));
+
+        this.chance = 0;
 
         this.scheduleUpdate();
 
@@ -261,7 +253,6 @@ var ScreenGame = cc.Layer.extend({
 
         // score
         this.score.setString('SCORE: ' + this.state.score);
-
 
         if (this.snake_body.length < this.state.len) {
             // var snake_tail = new cc.Sprite('res/green.jpg', cc.rect(0,0, this.screen.block.x, this.screen.block.y))
@@ -487,6 +478,24 @@ var ScreenGame = cc.Layer.extend({
         this.apple.setScale(0.5);
         this.addChild(this.apple);
 
+        if (this.gen && this.chance > 0.5) {
+            this.genCow();
+            this.state.genCowTime = new Date();
+            this.cow.setVisible(true);
+            this.cow.setPosition(this.absolutePos(this.state.cow))
+        }
+
+        if (this.state.genCowTime) {
+            var now = new Date();
+            if (now - this.state.genCowTime > 4000) {
+                this.gen = true;
+                this.state.cow = cc.p(-1,-1);
+                this.chance = Math.random();
+                this.state.genCowTime = null;
+                this.cow.setVisible(false);
+            }
+        }
+
     },
     generatePrey: function() {
         this.state.apple = cc.p(
@@ -519,11 +528,25 @@ var ScreenGame = cc.Layer.extend({
                 break;
         }
 
-        if (head.x < 0 || head.y < 0 || head.x >= this.screen.grid[0] || head.y >= this.screen.grid[1]) {
-            this.gameOver();
-        } else {
+        if (this.mode === false) {
+            if (head.x < 0 || head.y < 0 || head.x >= this.screen.grid[0] || head.y >= this.screen.grid[1])
+                this.gameOver();
+            else
+                dots.push(head);
+        }
+        else {
+            if (head.x < 0)
+                head.x = this.screen.grid[0] - 1;
+            else if (head.x >= this.screen.grid[0])
+                head.x = 0;
+            else if (head.y < 0)
+                head.y = this.screen.grid[1] - 1;
+            else if (head.y >= this.screen.grid[1])
+                head.y = 0;
             dots.push(head);
         }
+
+
 
         for (var i = 0, len = dots.length - 1; i < len; ++i) {
             if (head.x === dots[i].x && head.y === dots[i].y) {
@@ -537,13 +560,32 @@ var ScreenGame = cc.Layer.extend({
             this.state.score += 1;
             this.state.len += 1;
             this.state.speed += 0.1;
+            this.chance = Math.random();
             this.generatePrey();
         }
+
+        if (head.x === this.state.cow.x && head.y === this.state.cow.y) {
+            this.state.score += 10;
+            this.gen = true;
+            this.state.cow = cc.p(-1,-1);
+            this.chance = Math.random();
+            this.cow.setVisible(false);
+        }
+
 
         if (dots.length > this.state.len) {
             dots.shift();
         }
     },
+
+    genCow: function () {
+        this.state.cow = cc.p(
+            Math.floor(Math.random() * this.screen.grid[0]),
+            Math.floor(Math.random() * this.screen.grid[1])
+        )
+        this.gen = false;
+    },
+
     update: function(dt) {
         if (!this.state.alive) {
             return;
@@ -551,18 +593,6 @@ var ScreenGame = cc.Layer.extend({
 
         //move ref time in ms
         var baseTime = 0.35;
-
-        // this.temp = this.state.speed;
-        // if (this.keydown) {
-        //     var ima = new Date();
-        //     var time = ima - this.pressTime;
-        //     if (time > 500) {
-        //         this.state.speed = 4;
-        //     }
-        // }
-        // else {
-        //     this.state.speed = this.temp;
-        // }
 
         // dt > inc => false
         // dt < inc => true
