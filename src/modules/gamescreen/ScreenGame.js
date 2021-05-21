@@ -141,7 +141,7 @@ var ScreenGame = cc.Layer.extend({
         this.healthBar.setType(cc.ProgressTimer.TYPE_BAR);
         this.healthBar.setBarChangeRate(cc.p(1,0));
         this.healthBar.setMidpoint(cc.p(0,0));
-        this.healthBar.setPosition(cc.winSize.width/2, cc.winSize.height/5);
+        this.healthBar.setPosition(cc.winSize.width/2, cc.winSize.height/8);
         this.addChild(this.healthBar);
 
         this.drawBorder();
@@ -156,7 +156,6 @@ var ScreenGame = cc.Layer.extend({
                     if (!self.state.alive) {
                         self.gameOver();
                     }
-                    self.keydown = true;
                     self.pressTime = new Date();
                     switch (key) {
                         case cc.KEY['up']:
@@ -203,8 +202,6 @@ var ScreenGame = cc.Layer.extend({
                     }
                 },
                 onKeyReleased: function (key, event) {
-                    // self.state.speed = self.state.temp;
-                    self.keydown = false;
                 }
             }, this);
         }

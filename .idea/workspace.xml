@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="bebd7380-90f7-48b3-9ecb-8eae883dd9e2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simulator/cache/jsb.sqlite" beforeDir="false" afterPath="$PROJECT_DIR$/simulator/cache/jsb.sqlite" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/modules/gamescreen/ScreenGame.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/gamescreen/ScreenGame.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -696,6 +695,7 @@
       <workItem from="1621257444564" duration="10020000" />
       <workItem from="1621330816682" duration="3464000" />
       <workItem from="1621343239998" duration="3986000" />
+      <workItem from="1621388732608" duration="2631000" />
     </task>
     <servers />
   </component>
